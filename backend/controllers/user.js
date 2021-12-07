@@ -1,28 +1,34 @@
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken') // génère un token
 
 const User = require('../models/User')
 
-exports.signup = (req, res, next) => {
+// enregistrer un compte
+exports.signup = (req, res) => {
+	// crypte le mot de passe (data, salt)
 	bcrypt
 		.hash(req.body.password, 10)
 		.then((hash) => {
+			// crée le nouvel user avec le mail entrée, et le mdp hash
 			const user = new User({
 				email: req.body.email,
 				password: hash,
 			})
+			// enregistre le user
 			user
 				.save()
 				.then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
 				.catch((error) => res.status(400).json({ error }))
 		})
+		// erreur serveur
 		.catch((error) => res.status(500).json({ error }))
 }
 
-exports.login = (req, res, next) => {
-	// vérifie que l'e-mail entré par l'user correspond à un user existant de la BDD
+// se connecter
+exports.login = (req, res) => {
 	User.findOne({ email: req.body.email })
 		.then((user) => {
+			// si il n'existe pas, erreur 401
 			if (!user) {
 				return res.status(401).json({ error: 'Utilisateur non trouvé !' })
 			}
