@@ -1,0 +1,3 @@
+# ignore tout les fichiers du dossier, envoi un dossier vide
+*
+!.gitignore

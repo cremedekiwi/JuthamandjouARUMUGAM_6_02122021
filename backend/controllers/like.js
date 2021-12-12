@@ -1,6 +1,6 @@
 const Sauce = require('../models/Sauce') // sauceSchema
 
-// un user peut like, dislike, ou cancel
+// un user peut like, dislike, ou annuler
 exports.likeStatus = (req, res) => {
 	const like = req.body.like
 	const userId = req.body.userId
@@ -12,19 +12,19 @@ exports.likeStatus = (req, res) => {
 			let userLike = sauce.usersLiked.find((id) => id === userId)
 			let userDislike = sauce.usersDisliked.find((id) => id === userId)
 
-			console.log('Statut : ', like);
+			console.log('Statut : ', like)
 
 			// case "n" : n valeur au click
-			// += : j'ajoute || -= je retire 
+			// += : j'ajoute || -= je retire
 			// filter : montre les id différents de l'userId
 			switch (like) {
 				// like +1
 				case 1:
 					sauce.likes += 1
 					sauce.usersLiked.push(userId)
-				break
+					break
 
-				// cancel -1
+				// annule -1
 				case 0:
 					if (userLike) {
 						sauce.likes -= 1
@@ -32,16 +32,18 @@ exports.likeStatus = (req, res) => {
 					}
 					if (userDislike) {
 						sauce.dislikes -= 1
-						sauce.usersDisliked = sauce.usersDisliked.filter((id) => id !== userId)
+						sauce.usersDisliked = sauce.usersDisliked.filter(
+							(id) => id !== userId
+						)
 					}
-				break
+					break
 
 				// dislike +1
 				case -1:
 					sauce.dislikes += 1
 					sauce.usersDisliked.push(userId)
 			}
-			// sauvegarde la sauce avec like/dislike
+			// sauvegarde la sauce
 			sauce
 				.save()
 				.then(() => res.status(201).json({ message: 'save sauce' }))

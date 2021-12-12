@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken') // génère un token
-
 const User = require('../models/User')
 
 // enregistrer un compte
@@ -33,7 +32,7 @@ exports.login = (req, res) => {
 				return res.status(401).json({ error: 'Utilisateur non trouvé !' })
 			}
 			bcrypt
-				// compare le mdp entré par l'user avec le hash enregistré dans la BDD
+				// compare le mdp entré par l'user avec le hash enregistré
 				.compare(req.body.password, user.password)
 				.then((valid) => {
 					if (!valid) {

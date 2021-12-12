@@ -3,21 +3,22 @@ const fs = require('fs')
 
 exports.createSauce = (req, res, next) => {
 	const sauceObject = JSON.parse(req.body.sauce)
-	delete sauceObject._id
+	delete sauceObject._id // supprime le faux _id envoyé par le front-end
 	const sauce = new Sauce({
-		...sauceObject,
+		// crée une instance du model Sauce
+		...sauceObject, // contient toutes les informations du body
 		imageUrl: `${req.protocol}://${req.get('host')}/images/${
 			req.file.filename
 		}`,
 	})
-	sauce
-		.save()
+	sauce // promise
+		.save() // enregistre dans la BDD
 		.then(() => res.status(201).json({ message: 'Sauce enregistré !' }))
 		.catch((error) => res.status(400).json({ message: error }))
 }
 
 exports.getOneSauce = (req, res, next) => {
-	Sauce.findOne({_id: req.params.id,})
+	Sauce.findOne({ _id: req.params.id }) // trouve la Sauce avec le même _id
 		.then((sauce) => {
 			res.status(200).json(sauce)
 		})
@@ -36,8 +37,9 @@ exports.modifySauce = (req, res, next) => {
 		  }
 		: { ...req.body }
 	Sauce.updateOne(
-		{ _id: req.params.id },
-		{ ...sauceObject, _id: req.params.id }
+		// méthode updateOne() met à jour la sauce
+		{ _id: req.params.id }, // l'id de l'élément à modifier
+		{ ...sauceObject, _id: req.params.id } // la modification
 	)
 		.then(() => res.status(200).json({ message: 'Sauce modifié !' }))
 		.catch((error) => res.status(400).json({ error }))

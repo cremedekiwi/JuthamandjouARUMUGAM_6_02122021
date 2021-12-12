@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 module.exports = (req, res, next) => {
 	try {
-		// le header contient le mot-clé Bearer, on utilise split pour récupèrer tout après l'espace
+		// on utilise split pour récupérer le token après Bearer dans le header
 		const token = req.headers.authorization.split(' ')[1]
 		// la fonction verify décode notre token
 		const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET')
